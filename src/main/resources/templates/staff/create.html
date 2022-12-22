@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+
+<div class="dashboard-main-wrapper">
+
+    <div th:replace="/fragments/header :: header"></div>
+
+    <div th:replace="/fragments/left-sidebar :: left-sidebar"></div>
+
+    <div class="dashboard-wrapper">
+
+        <div class="dashboard-ecommerce">
+
+            <div class="container-fluid dashboard-content">
+
+                <div class="ecommerce-widget">
+
+                    <div class="row">
+
+                        <div class="col-lg-6 col-md-12">
+
+                            <section class="panel panel-transparent">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Staff Create</h2>
+                                </header>
+
+                                <div class="panel-body">
+
+                                    <!-- ------------------------FORM START----------------------------- -->
+                                    <form th:action="@{/staff/create}" method="post" th:object="${staffDTO}">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="firstname" class="col-form-label">First Name</label>
+                                                    <input id="firstname" type="text" placeholder="first name"
+                                                           th:field="*{firstName}" class="form-control">
+                                                    <div class="invalid-feedback"
+                                                         th:if="${#fields.hasErrors('firstName')}">
+                                                        <ul>
+                                                            <li th:each="err : ${#fields.errors('firstName')}"
+                                                                th:text="${err}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="lastname" class="col-form-label">Last Name</label>
+                                                    <input id="lastname" type="text" placeholder="last name"
+                                                           th:field="*{lastName}" class="form-control">
+                                                    <div class="invalid-feedback"
+                                                         th:if="${#fields.hasErrors('lastName')}">
+                                                        <ul>
+                                                            <li th:each="err : ${#fields.errors('lastName')}"
+                                                                th:text="${err}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="emailaddress" class="col-form-label">Email
+                                                        Address</label>
+                                                    <input id="emailaddress" type="email" placeholder="email address"
+                                                           th:field="*{contact}" class="form-control">
+                                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('contact')}">
+                                                        <ul>
+                                                            <li th:each="err : ${#fields.errors('contact')}"
+                                                                th:text="${err}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="password" class="col-form-label">Password</label>
+                                                    <input id="password" type="password" placeholder="password"
+                                                           th:field="*{password}" class="form-control">
+                                                    <div class="invalid-feedback"
+                                                         th:if="${#fields.hasErrors('password')}">
+                                                        <ul>
+                                                            <li th:each="err : ${#fields.errors('password')}"
+                                                                th:text="${err}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="contactNumber" class="col-form-label">Contact Number</label>
+                                                    <input id="contactNumber" type="tel" placeholder="contact" th:field="*{contactNumber}" class="form-control">
+                                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('contactNumber')}">
+                                                        <ul>
+                                                            <li th:each="err : ${#fields.errors('contactNumber')}"
+                                                                th:text="${err}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label>Choose a Type</label>
+                                                    <select th:field="*{type}" name="type" class="custom-select">
+                                                        <option th:value="''" th:text="Select"></option>
+                                                        <option th:each="eachType : ${typeList}" th:value="${eachType}"
+                                                                th:text="${eachType.toString().charAt(0) + eachType.toString().substring(1).toLowerCase()}"></option>
+                                                    </select>
+                                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('type')}">
+                                                        <ul>
+                                                            <li th:each="err : ${#fields.errors('type')}"
+                                                                th:text="${err}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="address" class="col-form-label">Address</label>
+                                                    <input id="address" type="text" placeholder="address"
+                                                           th:field="*{address}" class="form-control">
+                                                    <div class="invalid-feedback"
+                                                         th:if="${#fields.hasErrors('address')}">
+                                                        <ul>
+                                                            <li th:each="err : ${#fields.errors('address')}"
+                                                                th:text="${err}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 col-lg-12">
+                                                <div class="float-right">
+                                                    <button type="submit" class="btn btn-success">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                    <!-- ------------------------FORM END----------------------------- -->
+
+                                </div>
+
+                            </section>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ------------------------TABLE START----------------------------- -->
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="col-md-12">
+                            <section class="panel">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Staff List</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Contact Number</th>
+                                                <th scope="col">Address</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+
+                                            <tr th:each="eachStaff: ${staffDTOList}">
+                                                <td th:text="${eachStaff.firstName + ' ' + eachStaff.lastName}"></td>
+                                                <td th:text="${eachStaff.contact}"></td>
+                                                <td th:text="${eachStaff.contactNumber}"></td>
+                                                <td th:text="${eachStaff.address}"></td>
+                                                <td th:text="${eachStaff.type.toString().charAt(0) + eachStaff.type.toString().substring(1).toLowerCase()}"></td>
+                                                <td class="actions">
+                                                    <a th:href="@{/staff/update/__${eachStaff.contact}__}"
+                                                       class="btn btn-warning btn-sm">Update</a>
+                                                    <a th:href="@{/staff/delete/__${eachStaff.contact}__}"
+                                                       class="delete-row btn btn-secondary btn-sm">Delete</a>
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------------------------TABLE END----------------------------- -->
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:replace="/fragments/footer :: footer"></div>
+
+</div>
+
+<div th:replace="/fragments/javascript :: js"></div>
+
+</body>
+
+</html>
