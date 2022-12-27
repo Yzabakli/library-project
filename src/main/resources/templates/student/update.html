@@ -72,7 +72,7 @@
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="contact" class="col-form-label">Contact</label>
-                                                    <input id="contact" type="text" placeholder="email or phone"
+                                                    <input readonly id="contact" type="text" placeholder="email or phone"
                                                            th:field="*{contact}" class="form-control">
                                                     <div class="invalid-feedback"
                                                          th:if="${#fields.hasErrors('contact')}">

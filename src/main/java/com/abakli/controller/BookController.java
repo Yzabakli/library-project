@@ -29,8 +29,8 @@ public class BookController {
     @GetMapping
     public String readAllBooks(Model model) {
 
-//        model.addAttribute("books", bookService.readAll());
-        model.addAttribute("books", bookService.readAllFromRest());
+        model.addAttribute("books", bookService.readAll());
+//        model.addAttribute("books", bookService.readAllFromRest());
         return "book/browse";
     }
 
@@ -38,8 +38,8 @@ public class BookController {
     public String search(Model model) {
 
         model.addAttribute(new SearchDTO());
-//        model.addAttribute("books", bookService.readAll());
-        model.addAttribute("books", bookService.readAllFromRest());
+        model.addAttribute("books", bookService.readAll());
+//        model.addAttribute("books", bookService.readAllFromRest());
 
         return "book/search";
     }
@@ -47,8 +47,8 @@ public class BookController {
     @PostMapping("/search")
     public String search(SearchDTO searchDTO, Model model) {
 
-//        model.addAttribute("books", bookService.readAll());
-        model.addAttribute("books", bookService.readAllFromRest());
+        model.addAttribute("books", bookService.readAll());
+//        model.addAttribute("books", bookService.readAllFromRest());
 
         return "redirect:/book/search/" + searchDTO.getKeyword();
     }
@@ -57,8 +57,8 @@ public class BookController {
     public String searchBySubject(@PathVariable String keyword, Model model) {
 
         model.addAttribute(new SearchDTO());
-//        model.addAttribute("books", bookService.getByTitleContains(keyword));
-        model.addAttribute("books", bookService.getBySubjectFromRest(keyword));
+        model.addAttribute("books", bookService.getByTitleContains(keyword));
+//        model.addAttribute("books", bookService.getBySubjectFromRest(keyword));
 
         return "book/search";
     }

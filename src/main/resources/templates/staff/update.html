@@ -71,7 +71,7 @@
                                                 <div class="form-group">
                                                     <label for="emailaddress" class="col-form-label">Email
                                                         Address</label>
-                                                    <input id="emailaddress" type="email" placeholder="email address"
+                                                    <input readonly id="emailaddress" type="email" placeholder="email address"
                                                            th:field="*{contact}" class="form-control">
                                                     <div class="invalid-feedback" th:if="${#fields.hasErrors('contact')}">
                                                         <ul>

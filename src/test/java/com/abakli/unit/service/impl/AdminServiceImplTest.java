@@ -15,9 +15,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,33 +52,36 @@ class AdminServiceImplTest {
                 setFirstName("admin");
                 setLastName("user");
                 setContact("admin@admin.com");
-                setPassword(passwordEncoder.encode("Abc1"));
-                setRole(new Role());
+                setPassword("$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+                setRole(new Role() {{
+                    setId(1L);
+                    setDescription("Admin");
+                }});
                 setIsDeleted(false);
             }});
             add(new Admin());
             add(new Admin());
         }};
 
-//        List<AdminDTO> adminDTOs = new ArrayList<>() {{
-//            add(new AdminDTO() {{
-//                setId(1L);
-//                setFirstName("admin");
-//                setLastName("user");
-//                setContact("admin@admin.com");
-//                setPassword(passwordEncoder.encode("Abc1"));
-//                setRole(new RoleDTO());
-//            }});
-//            add(new AdminDTO());
-//            add(new AdminDTO());
-//        }};
+        List<AdminDTO> adminDTOs = new ArrayList<>() {{
+            add(new AdminDTO() {{
+                setId(1L);
+                setFirstName("admin");
+                setLastName("user");
+                setContact("admin@admin.com");
+                setPassword("$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+                setRole(new RoleDTO(1L, "Admin"));
+            }});
+            add(new AdminDTO());
+            add(new AdminDTO());
+        }};
 
         when(adminRepository.findAll()).thenReturn(admins);
-        when(mapperUtil.convert(any(Admin.class), AdminDTO.class)).thenReturn(new AdminDTO());
+        when(mapperUtil.convert(any(Admin.class), any(AdminDTO.class))).thenReturn(adminDTOs.get(0), adminDTOs.get(1), adminDTOs.get(2));
 
         List<AdminDTO> list = adminService.readAll();
 
-        verify(mapperUtil, atLeast(3)).convert(any(Admin.class), AdminDTO.class);
+        verify(mapperUtil, atLeast(3)).convert(any(Admin.class), any(AdminDTO.class));
 
         assertEquals(list.size(), 3);
 
@@ -88,35 +92,148 @@ class AdminServiceImplTest {
         assertEquals(adminDTO.getLastName(), "user");
         assertEquals(adminDTO.getContact(), "admin@admin.com");
         assertEquals(adminDTO.getPassword(), "$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
-        assertTrue(passwordEncoder.matches("Abc1", "$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK"));
-        assertNotNull(adminDTO.getRole());
+        assertEquals(adminDTO.getRole().getId(), 1L);
+        assertEquals(adminDTO.getRole().getDescription(), "Admin");
+    }
+
+    @Test
+    void readAll_empty_list() {
+
+        List<Admin> admins = new ArrayList<>();
+
+        when(adminRepository.findAll()).thenReturn(admins);
+
+        List<AdminDTO> list = adminService.readAll();
+
+        assertTrue(list.isEmpty());
     }
 
     @Test
     void save() {
+
+        AdminDTO adminDTO = new AdminDTO() {{
+            setFirstName("admin");
+            setLastName("user");
+            setContact("admin@admin.com");
+            setPassword("Abc1");
+        }};
+
+        Admin admin = new Admin() {{
+            setFirstName("admin");
+            setLastName("user");
+            setContact("admin@admin.com");
+            setPassword("Abc1");
+        }};
+
+        when(mapperUtil.convert(eq(adminDTO), eq(Admin.class))).thenReturn(admin);
+        when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+        when(mapperUtil.convert(any(), any(Role.class))).thenReturn(new Role("Admin"));
+
+        adminService.save(adminDTO);
+
+        assertEquals(admin.getPassword(), "$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+        assertFalse(admin.getIsDeleted());
+        assertEquals(admin.getRole().getDescription(), "Admin");
+
     }
 
     @Test
     void findByContact() {
+
+        AdminDTO dto = new AdminDTO() {{
+            setFirstName("admin");
+            setLastName("user");
+            setContact("admin@admin.com");
+            setPassword("$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+            setRole(new RoleDTO(1L, "Admin"));
+        }};
+
+        Admin admin = new Admin() {{
+            setId(1L);
+            setFirstName("admin");
+            setLastName("user");
+            setContact("admin@admin.com");
+            setPassword("$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+            setRole(new Role() {{
+                setId(1L);
+                setDescription("Admin");
+            }});
+            setIsDeleted(false);
+        }};
+
+        when(adminRepository.findByContact(anyString())).thenReturn(Optional.of(admin));
+        when(mapperUtil.convert(eq(admin), any(AdminDTO.class))).thenReturn(dto);
+
+        AdminDTO result = adminService.findByContact("admin@admin.com");
+
+        assertEquals(result.getContact(), admin.getContact());
     }
 
     @Test
     void update() {
+
+        AdminDTO adminDTO = new AdminDTO() {{
+            setFirstName("admin");
+            setLastName("mike");
+            setContact("admin@admin.com");
+            setPassword("Abc1");
+        }};
+
+        Admin admin = new Admin() {{
+            setId(1L);
+            setFirstName("admin");
+            setLastName("user");
+            setContact("admin@admin.com");
+            setPassword("$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+            setIsDeleted(false);
+            setRole(new Role("Admin"));
+            setInsertUserId(1L);
+            setLastUpdateUserId(1L);
+            setInsertDateTime(LocalDateTime.now());
+            setLastUpdateDateTime(LocalDateTime.now());
+        }};
+
+        Admin convert = new Admin() {{
+            setFirstName("admin");
+            setLastName("mike");
+            setContact("admin@admin.com");
+            setPassword("Abc1");
+        }};
+
+        when(adminRepository.findByContact(anyString())).thenReturn(Optional.of(admin));
+        when(mapperUtil.convert(eq(adminDTO), any(Admin.class))).thenReturn(convert);
+        when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+        when(mapperUtil.convert(any(), any(Role.class))).thenReturn(new Role("Admin"));
+
+        adminService.update(adminDTO);
+
+        assertEquals(admin.getId(), convert.getId());
+        assertEquals(convert.getLastName(), "mike");
+        assertEquals(convert.getPassword(), "$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+        assertFalse(convert.getIsDeleted());
+        assertEquals(convert.getRole().getDescription(), "Admin");
     }
 
     @Test
     void delete() {
-    }
 
-    @Test
-    void countAll() {
-    }
+        Admin admin = new Admin() {{
+            setId(1L);
+            setFirstName("admin");
+            setLastName("user");
+            setContact("admin@admin.com");
+            setPassword("$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK");
+            setRole(new Role() {{
+                setId(1L);
+                setDescription("Admin");
+            }});
+            setIsDeleted(false);
+        }};
 
-    @Test
-    void getCurrentUser() {
-    }
+        when(adminRepository.findByContact(anyString())).thenReturn(Optional.of(admin));
 
-    @Test
-    void existsByContact() {
+        adminService.delete("admin@admin.com");
+
+        assertTrue(admin.getIsDeleted());
     }
 }
