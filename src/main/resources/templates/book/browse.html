@@ -45,7 +45,7 @@
                                             </thead>
 
                                             <tbody>
-                                            <tr th:each="eachBook: ${bookDTOList}">
+                                            <tr th:each="eachBook: ${books}">
                                                 <td th:text="${eachBook.title}"></td>
                                                 <td th:text="${eachBook.edition}"></td>
                                                 <td th:text="${eachBook.author}"></td>

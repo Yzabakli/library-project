@@ -12,7 +12,6 @@ import com.abakli.repository.BookRepository;
 import com.abakli.service.BookService;
 import com.abakli.service.BorrowerRecordService;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -178,8 +177,7 @@ public class BookServiceImpl implements BookService {
         return mapper.convert(bookRepository.save(mapper.convert(new BookDTO(work.getCoverId()
                 .longValue(),
                 work.getTitle(),
-                work.getEditionCount()
-                .toString(),
+                work.getEditionCount().toString(),
                 work.getAuthors().get(0).getName(),
                 "Unknown Publisher",
                 1,

@@ -1,6 +1,5 @@
 package com.abakli;
 
-import com.abakli.bootstrap.DataGenerator;
 import com.github.javafaker.Faker;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +19,7 @@ public class LibraryProjectApplication {
     }
 
     @Bean
-    public ModelMapper modelMapper(){
+    public ModelMapper modelMapper() {
         return new ModelMapper();
     }
 
